@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Brick : MonoBehaviour
 {
@@ -12,7 +13,29 @@ public class Brick : MonoBehaviour
 
     void Start()
     {
-        var renderer = GetComponentInChildren<Renderer>();
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+        {
+             var renderer = GetComponentInChildren<Renderer>();
+
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            switch (PointValue)
+            {
+                case 1 :
+                    block.SetColor("_BaseColor", Color.green);
+                    break;
+                case 2:
+                    block.SetColor("_BaseColor", Color.yellow);
+                    break;
+                case 5:
+                    block.SetColor("_BaseColor", Color.blue);
+                    break;
+                default:
+                    block.SetColor("_BaseColor", Color.red);
+                    break;
+        }
+        renderer.SetPropertyBlock(block);
+        }
+        /*var renderer = GetComponentInChildren<Renderer>();
 
         MaterialPropertyBlock block = new MaterialPropertyBlock();
         switch (PointValue)
@@ -30,7 +53,7 @@ public class Brick : MonoBehaviour
                 block.SetColor("_BaseColor", Color.red);
                 break;
         }
-        renderer.SetPropertyBlock(block);
+        renderer.SetPropertyBlock(block);*/
     }
 
     private void OnCollisionEnter(Collision other)
