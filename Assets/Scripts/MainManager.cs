@@ -109,7 +109,7 @@ public class MainManager : MonoBehaviour
             //A save file exists, compare current score with best score, if current score > best score, update best score, else don't update
             string json = File.ReadAllText(path);
             BestScoreSaveData loadedData = JsonUtility.FromJson<BestScoreSaveData>(json);
-            if(scorePoints > loadedData.bestScore)
+            if(scorePoints >= loadedData.bestScore)
             {
                 SaveData();
             }
