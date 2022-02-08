@@ -25,6 +25,7 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LoadData();
 
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -93,7 +94,7 @@ public class MainManager : MonoBehaviour
         bestScoreData.bestScore = scorePoints;
         string json = JsonUtility.ToJson(bestScoreData);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json); //Saved as JSON
-        BestScoreText.text = "Best Score : " + bestScoreData.bestScoreName + " : " + bestScoreData.bestScore; //Update best score on screen
+        DisplayBestScore(bestScoreData);
     }
 
     public void LoadData()
@@ -112,7 +113,17 @@ public class MainManager : MonoBehaviour
             {
                 SaveData();
             }
+            else
+            {
+                DisplayBestScore(loadedData);
+            }
         }
+    }
+
+    public void DisplayBestScore(BestScoreSaveData bestScoreData)
+    {
+        BestScoreText.text = "Best Score : " + bestScoreData.bestScoreName + " : " + bestScoreData.bestScore; //Update best score on screen
+        MenuManager.BestScoreText = BestScoreText;
     }
 
     [System.Serializable]
