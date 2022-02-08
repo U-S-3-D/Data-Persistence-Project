@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,7 +11,7 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public static Text ScoreText; //Added static
     public Text BestScoreText; //For best score
     public GameObject GameOverText;
     
@@ -23,7 +24,7 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log(MenuManager.Name); Name 
+        //BestScoreSaveData bestScoreData = new BestScoreSaveData();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -78,5 +79,15 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        //Compare current score with saved BestScore (JSON), if current > BestScore, update BestScore values.
+        //If BestScore (JSON) is empty or doesn't exist, save current as BestScore
+        //Load BestScore in Menu and Main scenes when a new game starts
+    }
+
+    [System.Serializable]
+    public class BestScoreSaveData
+    {
+        public string bestScoreName = MenuManager.Name;
+        public int bestScore = int.Parse(ScoreText.text);
     }
 }
