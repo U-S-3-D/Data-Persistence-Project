@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class MenuManager : MonoBehaviour
 {
+    public static string Name; // Was Text
+    public InputField NameInputField;
+    
+
+   
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         
     }
@@ -22,6 +28,7 @@ public class MenuManager : MonoBehaviour
 
     public void LoadMainScene()
     {
+        Name = NameInputField.text;
         SceneManager.LoadScene(1);
     }
 
