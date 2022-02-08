@@ -10,8 +10,9 @@ public class MainManager : MonoBehaviour
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
+    public int scorePoints;
 
-    public static Text ScoreText; //Added static
+    public Text ScoreText;
     public Text BestScoreText; //For best score
     public GameObject GameOverText;
     
@@ -24,7 +25,7 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //BestScoreSaveData bestScoreData = new BestScoreSaveData();
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -72,6 +73,7 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
+        scorePoints = m_Points;
         ScoreText.text = $"Score : {m_Points}";
     }
 
@@ -79,15 +81,44 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        //Compare current score with saved BestScore (JSON), if current > BestScore, update BestScore values.
-        //If BestScore (JSON) is empty or doesn't exist, save current as BestScore
-        //Load BestScore in Menu and Main scenes when a new game starts
+        
+        //SaveData();
+        LoadData();
+    }
+
+    public void SaveData()
+    {
+        BestScoreSaveData bestScoreData = new BestScoreSaveData();
+        bestScoreData.bestScoreName = MenuManager.Name;
+        bestScoreData.bestScore = scorePoints;
+        string json = JsonUtility.ToJson(bestScoreData);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json); //Saved as JSON
+        BestScoreText.text = "Best Score : " + bestScoreData.bestScoreName + " : " + bestScoreData.bestScore; //Update best score on screen
+    }
+
+    public void LoadData()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if(!File.Exists(path)) //if file doesn't exist, then there's no save, call SaveData()
+        {
+            SaveData();
+        }
+        else
+        {
+            //A save file exists, compare current score with best score, if current score > best score, update best score, else don't update
+            string json = File.ReadAllText(path);
+            BestScoreSaveData loadedData = JsonUtility.FromJson<BestScoreSaveData>(json);
+            if(scorePoints > loadedData.bestScore)
+            {
+                SaveData();
+            }
+        }
     }
 
     [System.Serializable]
     public class BestScoreSaveData
     {
-        public string bestScoreName = MenuManager.Name;
-        public int bestScore = int.Parse(ScoreText.text);
+        public string bestScoreName;
+        public int bestScore;
     }
 }
